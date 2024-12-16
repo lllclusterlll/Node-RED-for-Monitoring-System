@@ -1,0 +1,105 @@
+[
+    {
+        "id": "25850227a5a62a17",
+        "type": "tab",
+        "label": "API",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "5845f12f970dbe1a",
+        "type": "http in",
+        "z": "25850227a5a62a17",
+        "name": "",
+        "url": "/read_data",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 400,
+        "y": 220,
+        "wires": [
+            [
+                "6c7cee7fa1582668"
+            ]
+        ]
+    },
+    {
+        "id": "6c7cee7fa1582668",
+        "type": "function",
+        "z": "25850227a5a62a17",
+        "name": "ข้อมูลแบบ Static",
+        "func": "msg.payload = \n{\n    \"device\" : \"Node-RED\",\n    \"value\" : 45.89\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 220,
+        "wires": [
+            [
+                "7e0ee80af03909f8"
+            ]
+        ]
+    },
+    {
+        "id": "7e0ee80af03909f8",
+        "type": "http response",
+        "z": "25850227a5a62a17",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 900,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "aeb8b70cb1f82854",
+        "type": "http in",
+        "z": "25850227a5a62a17",
+        "name": "",
+        "url": "/read_data_db",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 410,
+        "y": 380,
+        "wires": [
+            [
+                "84f6b7dddb1f5911"
+            ]
+        ]
+    },
+    {
+        "id": "a47db535ca758dad",
+        "type": "http response",
+        "z": "25850227a5a62a17",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 900,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "84f6b7dddb1f5911",
+        "type": "influxdb in",
+        "z": "25850227a5a62a17",
+        "influxdb": "",
+        "name": "อ่านข้อมูลจาก Database",
+        "query": "from(bucket: \"test-1\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"log-1\")\n  |> filter(fn: (r) => r[\"_field\"] == \"cpu\" or r[\"_field\"] == \"device\" or r[\"_field\"] == \"os\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 670,
+        "y": 380,
+        "wires": [
+            [
+                "a47db535ca758dad"
+            ]
+        ]
+    }
+]

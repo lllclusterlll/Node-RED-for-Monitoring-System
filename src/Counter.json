@@ -1,0 +1,365 @@
+[
+    {
+        "id": "33e7c35be8df3312",
+        "type": "tab",
+        "label": "นับชิ้นงาน",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "30e320f9632f6e83",
+        "type": "inject",
+        "z": "33e7c35be8df3312",
+        "name": "Manual (Total)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 210,
+        "y": 500,
+        "wires": [
+            [
+                "53bf8571fdb0c4c1"
+            ]
+        ]
+    },
+    {
+        "id": "91b4418d54899775",
+        "type": "inject",
+        "z": "33e7c35be8df3312",
+        "name": "RESET",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "RESET",
+        "payloadType": "str",
+        "x": 190,
+        "y": 140,
+        "wires": [
+            [
+                "7b554f3509d8fd7b"
+            ]
+        ]
+    },
+    {
+        "id": "7b554f3509d8fd7b",
+        "type": "function",
+        "z": "33e7c35be8df3312",
+        "name": "กำหนดค่า Memory",
+        "func": "global.set(\"PRODUCT_TOTAL\", 0);\nglobal.set(\"PRODUCT_GOOD\", 0);\nglobal.set(\"TIME_START\", Date.now());\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 140,
+        "wires": [
+            [
+                "747dc41f1ee3498d"
+            ]
+        ]
+    },
+    {
+        "id": "747dc41f1ee3498d",
+        "type": "debug",
+        "z": "33e7c35be8df3312",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "9e3bc5b9157d0ab1",
+        "type": "inject",
+        "z": "33e7c35be8df3312",
+        "name": "READ",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 220,
+        "wires": [
+            [
+                "ec1d19e482c2eac3"
+            ]
+        ]
+    },
+    {
+        "id": "ec1d19e482c2eac3",
+        "type": "function",
+        "z": "33e7c35be8df3312",
+        "name": "อ่านค่า Memory",
+        "func": "msg.product_total = global.get(\"PRODUCT_TOTAL\");\nmsg.product_good = global.get(\"PRODUCT_GOOD\");\nmsg.time_start = global.get(\"TIME_START\");\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 220,
+        "wires": [
+            [
+                "865ba129832cf973"
+            ]
+        ]
+    },
+    {
+        "id": "865ba129832cf973",
+        "type": "debug",
+        "z": "33e7c35be8df3312",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "53bf8571fdb0c4c1",
+        "type": "function",
+        "z": "33e7c35be8df3312",
+        "name": "นับจำนวนชิ้นงาน (Total)",
+        "func": "// อ่านค่าจาก memory\nvar read_memory = global.get(\"PRODUCT_TOTAL\");\n\n// นับเพิ่ม\nvar result = read_memory + 1;\n\n// บันทึกค่าลง Memory\nglobal.set(\"PRODUCT_TOTAL\", result);\n\n// ส่งค่าให้ Node อื่นใช้งาน\nmsg.product_total = result;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 500,
+        "wires": [
+            [
+                "af5142cf7f531592"
+            ]
+        ]
+    },
+    {
+        "id": "af5142cf7f531592",
+        "type": "debug",
+        "z": "33e7c35be8df3312",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "2a2ba2efbe2c7606",
+        "type": "inject",
+        "z": "33e7c35be8df3312",
+        "name": "Manual (Good)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 740,
+        "wires": [
+            [
+                "79b9a1bc5b871ed0"
+            ]
+        ]
+    },
+    {
+        "id": "79b9a1bc5b871ed0",
+        "type": "function",
+        "z": "33e7c35be8df3312",
+        "name": "นับจำนวนชิ้นงาน (Good)",
+        "func": "// อ่านค่าจาก memory\nvar read_memory = global.get(\"PRODUCT_GOOD\");\n\n// นับเพิ่ม\nvar result = read_memory + 1;\n\n// บันทึกค่าลง Memory\nglobal.set(\"PRODUCT_GOOD\", result);\n\n// ส่งค่าให้ Node อื่นใช้งาน\nmsg.product_good = result;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 740,
+        "wires": [
+            [
+                "a3db1759dd0a147f"
+            ]
+        ]
+    },
+    {
+        "id": "a3db1759dd0a147f",
+        "type": "debug",
+        "z": "33e7c35be8df3312",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "36458b985411e310",
+        "type": "mqtt in",
+        "z": "33e7c35be8df3312",
+        "name": "",
+        "topic": "training/machine/1/sensor/0/status",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 280,
+        "y": 340,
+        "wires": [
+            [
+                "12d551e8dc44c407"
+            ]
+        ]
+    },
+    {
+        "id": "12d551e8dc44c407",
+        "type": "switch",
+        "z": "33e7c35be8df3312",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 570,
+        "y": 340,
+        "wires": [
+            [
+                "53bf8571fdb0c4c1"
+            ]
+        ]
+    },
+    {
+        "id": "3f96765b461b6f34",
+        "type": "mqtt in",
+        "z": "33e7c35be8df3312",
+        "name": "",
+        "topic": "training/machine/1/sensor/1/status",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 280,
+        "y": 620,
+        "wires": [
+            [
+                "d883bb06dd75042a"
+            ]
+        ]
+    },
+    {
+        "id": "d883bb06dd75042a",
+        "type": "switch",
+        "z": "33e7c35be8df3312",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 570,
+        "y": 620,
+        "wires": [
+            [
+                "79b9a1bc5b871ed0"
+            ]
+        ]
+    }
+]

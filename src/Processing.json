@@ -1,0 +1,132 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "ประมวลผล",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "28d690337be23914",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "Manual/Auto",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 340,
+        "wires": [
+            [
+                "135dcb8c8524c116"
+            ]
+        ]
+    },
+    {
+        "id": "135dcb8c8524c116",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "ประมวลผล",
+        "func": "// อ่านค่าจาก Memory\nmsg.product_total = global.get(\"PRODUCT_TOTAL\");\nmsg.product_good = global.get(\"PRODUCT_GOOD\");\nmsg.time_start = global.get(\"TIME_START\");\n\n// คำนวนหา Quality\nmsg.quality = msg.product_good / msg.product_total;\n\n// คำนวนหา Performance\nvar time_total = (Date.now() - msg.time_start) / 1000;\nvar ideal_rate = 1.0 / 5;\nvar run_rate = msg.product_total / time_total;\nmsg.performance = run_rate / ideal_rate;\n\n// กำหนดค่าคงที่ Availability\nmsg.availability = 1.0;\n\n// คำนวนค่า OEE\nmsg.oee = msg.quality * msg.performance * msg.availability;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 340,
+        "wires": [
+            [
+                "bd70d6a7a5fb3adb",
+                "427ef515d7ac6862"
+            ]
+        ]
+    },
+    {
+        "id": "bd70d6a7a5fb3adb",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "debug 3",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "427ef515d7ac6862",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "จัดรูปแบบข้อมูลให้ InfluxDB",
+        "func": "msg.payload = \n{\n    \"product total\" : msg.product_total,\n    \"product good\" : msg.product_good,\n    \"quality\" : msg.quality,\n    \"performance\" : msg.performance,\n    \"oee\" : msg.oee\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 540,
+        "wires": [
+            [
+                "9bb06072ccadfa77",
+                "3845b01cfe40e87e"
+            ]
+        ]
+    },
+    {
+        "id": "9bb06072ccadfa77",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "3845b01cfe40e87e",
+        "type": "influxdb out",
+        "z": "f6f2187d.f17ca8",
+        "influxdb": "",
+        "name": "",
+        "measurement": "productivity-1",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "KMUTT",
+        "bucket": "test-1",
+        "x": 740,
+        "y": 580,
+        "wires": []
+    }
+]
